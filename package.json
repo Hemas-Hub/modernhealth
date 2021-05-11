@@ -1,0 +1,17 @@
+{
+  "name": "modern-health",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mocha": "^8.4.0",
+    "pg": "^8.6.0"
+  }
+}

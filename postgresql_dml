@@ -1,0 +1,29 @@
+-- psql -d postgres -U me (To connect to postgres as 'me' user)
+-- \c mh (to connect to the db mh)
+
+
+
+INSERT INTO program (name, description) VALUES ('Leadership Development Program', 'Describes how to develop leadership skills'), ('Cognitive Behavioral Therapy', 'Improves mental health');
+
+INSERT INTO section (prog_id, name, img_path) VALUES (1, 'Values', '/s3/imgs/sections/1.png'), (1, 'Action', '/s3/imgs/sections/1.png');
+INSERT INTO section (prog_id, name, img_path) VALUES (2, 'Mindfullness', '/s3/imgs/sections/3.png'), (2, 'Flexibility', '/s3/imgs/sections/4.png');
+
+
+INSERT INTO activity (sec_id, type, content) VALUES (1, 0 , '<p>I also have another HTML text tool that can be used for your online mock-ups. If a client or someone else from your company has given you regular text content then that too can be easily turned into html formatted paragraphs using another tool on this site.</p>'), (1, 1, null);
+INSERT INTO activity (sec_id, type, content) VALUES (2, 1, NULL);
+INSERT INTO activity (sec_id, type, content) VALUES (3, 0 , '<p>What is Lorem Ipsum?</p><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>');
+INSERT INTO activity (sec_id, type, content) VALUES (4, 1 , NULL);
+
+
+INSERT INTO activity_question (act_id, question) VALUES 
+(2,  'How do you want to use mindfulness to improve your work?'),
+(3,  'How do you improve yourself?'),
+(4,  'How do you want to use keep peace?');
+
+
+INSERT INTO activity_question_option (qid, option) VALUES 
+(1,  'Increase focus'),
+(1,  'Improve concentration'),
+(2,  'Mental clarity'),
+(2,  'Reduce stress'),
+(3,  'Respond with kindness');

@@ -1,0 +1,102 @@
+-- psql -d postgres -U me (To connect to postgres as 'me' user)
+
+CREATE DATABASE mh;
+
+-- \c mh (to connect to the db mh)
+
+DROP TABLE activity_question_option;
+DROP TABLE activity_question;
+DROP TABLE activity;
+DROP TABLE section;
+DROP TABLE program;
+
+CREATE TABLE program(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(100) NOT NULL,
+	description VARCHAR(2000) NOT NULL,
+	created_date TIMESTAMP DEFAULT current_timestamp,
+	last_modified_date TIMESTAMP DEFAULT current_timestamp,
+	created_by TEXT NOT NULL DEFAULT current_user,
+	last_modified_by TEXT NOT NULL DEFAULT current_user
+);
+
+
+
+CREATE TABLE section(
+	id SERIAL PRIMARY KEY,
+	prog_id INTEGER NOT NULL,
+	name VARCHAR(100) NOT NULL,
+	img_path VARCHAR(250),
+	created_date TIMESTAMP DEFAULT current_timestamp,
+	last_modified_date TIMESTAMP DEFAULT current_timestamp,
+	created_by TEXT NOT NULL DEFAULT current_user,
+	last_modified_by TEXT NOT NULL DEFAULT current_user,
+	CONSTRAINT fk_sec_prog FOREIGN KEY(prog_id)  REFERENCES program(id)
+);
+
+
+
+CREATE TABLE activity(
+	id SERIAL PRIMARY KEY,
+	sec_id INTEGER NOT NULL,
+	type INTEGER NOT NULL DEFAULT 0,
+	content TEXT,
+	sort_order INTEGER NOT NULL DEFAULT 0,
+	created_date TIMESTAMP DEFAULT current_timestamp,
+	last_modified_date TIMESTAMP DEFAULT current_timestamp,
+	created_by TEXT NOT NULL DEFAULT current_user,
+	last_modified_by TEXT NOT NULL DEFAULT current_user,
+	CONSTRAINT fk_act_sec FOREIGN KEY(sec_id)  REFERENCES section(id)
+);
+
+
+
+CREATE TABLE activity_question(
+	id SERIAL PRIMARY KEY,
+	act_id INTEGER NOT NULL,
+	question VARCHAR(250) NOT NULL,
+	last_modified_date TIMESTAMP DEFAULT current_timestamp,
+	last_modified_by TEXT NOT NULL DEFAULT current_user,
+	CONSTRAINT fk_aq_act FOREIGN KEY(act_id)  REFERENCES activity(id)
+);
+
+
+CREATE TABLE activity_question_option(
+	id SERIAL PRIMARY KEY,
+	qid INTEGER NOT NULL,
+	option VARCHAR(250) NOT NULL,
+	last_modified_date TIMESTAMP DEFAULT current_timestamp,
+	last_modified_by TEXT NOT NULL DEFAULT current_user,
+	CONSTRAINT fk_aqo_question FOREIGN KEY(qid)  REFERENCES activity_question(id)
+);
+
+
+-- NOT REQUIRED
+/*
+CREATE TABLE activity_question_user_opt(
+	id SERIAL PRIMARY KEY,
+	qid INTEGER NOT NULL,
+	option VARCHAR(250) NOT NULL,
+	last_modified_date TIMESTAMP DEFAULT current_timestamp,
+	last_modified_by TEXT NOT NULL DEFAULT current_user,
+	CONSTRAINT fk_aqo_question FOREIGN KEY(qid)  REFERENCES activity_question(id)
+)
+
+select s.id, s.name, s.img_path , a.content, 
+aq.question, aqo.option
+from section s , activity a
+left join activity_question aq on a.type = 1 and aq.act_id = a.id
+left join activity_question_option aqo on a.type = 1 and aqo.qid = aq.id
+where s.id=1 
+and a.sec_id = s.id
+order by s.name asc;
+
+
+select s.id, s.name, s.img_path , a.content
+from section s , activity a
+where s.id=1 
+and a.sec_id = s.id
+order by s.name asc;
+*/
+
+
