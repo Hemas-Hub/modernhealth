@@ -1,10 +1,10 @@
 -- To connect to postgres as 'me' user
 -d postgres -U me
 
-CREATE DATABASE mh;
+CREATE DATABASE mh_test;
 
 -- (to connect to the db mh)
-\c mh 
+\c mh_test 
 
 DROP TABLE activity_question_option;
 DROP TABLE activity_question;

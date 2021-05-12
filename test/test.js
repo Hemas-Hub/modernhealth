@@ -1,5 +1,5 @@
 const assert = require('assert');
-
+const db = require('../queries');
 /**
  * Cases to test
  * 
@@ -17,8 +17,20 @@ const assert = require('assert');
  */
 describe('Modern Health Programs', function () {
     describe('Get Programs', function () {
-        it('should return -1 when the value is not present', function () {
-            assert.equal([1, 2, 3].indexOf(4), -1);
+        afterEach(() => {
+            `remove the rows inserted`
+        })
+        it('Returns the total array of programs in database', function () {
+            // `INSERT INTO program (name, description) VALUES ('Test1', 'Describes Test1'), ('Test2', 'Describes Test2');`
+            const response = db.getPrograms();
+            console.log(response);
+            assert.equal(response.length, 2);
+            assert.match(response, [{"id":1,"name":"Leadership Development Program","description":"Describes how to develop leadership skills"},{"id":2,"name":"Cognitive Behavioral Therapy","description":"Improves mental health"}]);
+        });
+
+        it('Return an empty array as no programs exist', function () {
+            const response = db.getPrograms();
+            assert.equal(response, []);
         });
     });
 

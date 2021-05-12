@@ -10,46 +10,33 @@ const pool = new Pool({
 /**
  * Returns list of all programs in mental health
  * 
- * @param {*} request 
- * @param {*} response 
  */
 
-const getPrograms = (request, response) => {
-    pool.query('SELECT id, name, description FROM program', (error, results) => {
-        if (error) {
-            throw error
-        }
-        response.status(200).json(results.rows)
-    })
+const getPrograms = async () => {
+    return await pool.query('SELECT id, name, description FROM program')
+    .then(results => { return results.rows; })
+    .catch(err => { throw err; })
 };
 /**
  * Returns program information for a program id
- * @param {*} request 
- * @param {*} response 
+ * 
+ * @param {*} program_id passes program id as request param from service call
  */
-const getProgramById = (request, response) => {
-    const id = parseInt(request.params.id)
-
-    pool.query('SELECT s.id, s.name, s.img_path FROM section s ' +
+const getProgramById = async (program_id) => {
+    return await pool.query('SELECT s.id, s.name, s.img_path FROM section s ' +
         'WHERE s.prog_id = $1 ORDER BY s.name ASC',
-        [id], (error, results) => {
-            if (error) {
-                throw error
-            }
-            response.status(200).json(results.rows)
-        })
+        [program_id])
+    .then(results => { return results.rows; })
+    .catch(err => { throw err; })
 };
 
 /**
  * Returns all information related to a section
  * 
- * @param {*} request 
- * @param {*} response 
+ * @param {*} section_id passes section id as request param from service call
  */
-const getSectionById = (request, response) => {
-    const id = parseInt(request.params.sid)
-
-    pool.query('SELECT s.id, s.name, s.img_path, a.id as a_id, a.content, q.question , ARRAY_AGG(op.option) as options'
+const getSectionById = async (section_id) => {
+    return await pool.query('SELECT s.id, s.name, s.img_path, a.id as a_id, a.content, q.question , ARRAY_AGG(op.option) as options'
         + ' FROM section s, activity a'
         + ' LEFT JOIN activity_question q on a.type= 1 and q.act_id = a.id'
         + ' LEFT JOIN activity_question_option op on op.qid = q.id'
@@ -57,12 +44,9 @@ const getSectionById = (request, response) => {
         + ' AND a.sec_id = s.id'
         + ' GROUP BY s.id, s.name, s.img_path, a.id, a.content, q.question '
         + ' ORDER BY a.sort_order ASC',
-        [id], (error, results) => {
-            if (error) {
-                throw error
-            }
-            response.status(200).json(results.rows)
-        })
+        [section_id])
+    .then(results => { return results.rows; })
+    .catch(err => { throw err; })
 };
 
 module.exports = {
