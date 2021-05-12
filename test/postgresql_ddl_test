@@ -3,7 +3,7 @@
 
 CREATE DATABASE mh_test;
 
--- (to connect to the db mh)
+-- (to connect to the db mh_test)
 \c mh_test 
 
 DROP TABLE activity_question_option;
