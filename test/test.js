@@ -17,32 +17,84 @@ const db = require('../queries');
  */
 describe('Modern Health Programs', function () {
     describe('Get Programs', function () {
+        // For test DB
         afterEach(() => {
-            `remove the rows inserted`
-        })
-        it('Returns the total array of programs in database', function () {
-            // `INSERT INTO program (name, description) VALUES ('Test1', 'Describes Test1'), ('Test2', 'Describes Test2');`
-            const response = db.getPrograms();
-            console.log(response);
-            assert.equal(response.length, 2);
-            assert.match(response, [{"id":1,"name":"Leadership Development Program","description":"Describes how to develop leadership skills"},{"id":2,"name":"Cognitive Behavioral Therapy","description":"Improves mental health"}]);
+            // `remove the rows inserted`
         });
 
-        it('Return an empty array as no programs exist', function () {
+        it('Should return the total array of programs in database', async function () {
+            const response = await db.getPrograms();
+            assert.equal(response.length, 2);
+            assert.deepEqual(response, [{"id":1,"name":"Leadership Development Program","description":"Describes how to develop leadership skills"},{"id":2,"name":"Cognitive Behavioral Therapy","description":"Improves mental health"}]);
+        });
+        
+        // Can be implemented in test DB
+        it.skip('should return an empty array as no programs exist', function () {
             const response = db.getPrograms();
-            assert.equal(response, []);
+            assert.equal(response.length, 0);
+            assert.deepEqual(response, []);
         });
     });
 
     describe('Get Program By Id', function () {
-        it('should return -1 when the value is not present', function () {
-            assert.equal([1, 2, 3].indexOf(4), -1);
+        // For test DB
+        afterEach(() => {
+            // `remove the rows inserted`
+        });
+
+        it('Should return Sections based on program id', async function () {
+            const program_id = 1;
+            const response = await db.getProgramById(program_id);
+            assert.equal(response.length, 2);
+            assert.deepEqual(response, [{"id":2,"name":"Action","img_path":"/s3/imgs/sections/1.png"},{"id":1,"name":"Values","img_path":"/s3/imgs/sections/1.png"}]);
+        });
+
+        it('Should return Empty Array of Sections if invalid program id is passed', async function () {
+            const program_id = -1;
+            const response = await db.getProgramById(program_id);
+            assert.equal(response.length, 0);
+            assert.deepEqual(response, []);
         });
     });
 
     describe('Get Section By Id', function () {
-        it('should return -1 when the value is not present', function () {
-            assert.equal([1, 2, 3].indexOf(4), -1);
+        // For test DB
+        afterEach(() => {
+            // `remove the rows inserted`
+        });
+
+        it('Should return all activities with html content and multiple choice options for a section id', async function () {
+            const section_id = 1;
+            const response = await db.getSectionById(section_id);
+            assert.equal(response.length, 2);
+            // First object has html content but null question and options 
+            assert.notEqual(response[0].content, null);
+            // assert.match(response[0].content, /<.+?>/, "is html content");
+            assert.equal(response[0].question, null);
+            assert.deepEqual(response[0].options, [null]);
+
+            // Second object has null html content but has question and options
+            assert.equal(response[1].content, null);
+            assert.equal(response[1].question, "How do you want to use mindfulness to improve your work?");
+            assert.deepEqual(response[1].options, ["Increase focus","Improve concentration"]);
+        });
+
+        it('Should return all activities with only multiple choice options for a section id', async function () {
+            const section_id = 2;
+            const response = await db.getSectionById(section_id);
+            assert.equal(response.length, 1);
+
+            // Object has null html content but has question and options
+            assert.equal(response[0].content, null);
+            assert.equal(response[0].question, "How do you improve yourself?");
+            assert.deepEqual(response[0].options, ["Mental clarity","Reduce stress"]);
+        });
+
+        it('Should return empty array of activities for an invalid section id', async function () {
+            const section_id = -1;
+            const response = await db.getSectionById(section_id);
+            assert.equal(response.length, 0);
+            assert.deepEqual(response, [])
         });
     });
 });
